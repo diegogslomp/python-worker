@@ -2,7 +2,7 @@
 
 ### Run sync/async tasks from a queue
 
-### Instead of creating a loop to run a function on each item in a list
+### Instead of creating a loop to run a task on each item in a list
 ### ```python
 import time
 import random
@@ -15,7 +15,7 @@ for sleep_for in some_list:
     time.sleep(sleep_for)
 ### ```
 
-### Create workers to do tasks from a queue of items
+### Create workers to do the task from a queue of items
 ### ```python
 from worker import Work
 from asyncio import Queue

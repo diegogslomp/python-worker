@@ -1,5 +1,5 @@
-from asyncio import Queue
 from collections.abc import Callable
+from asyncio import Queue
 import asyncio
 import logging
 import inspect

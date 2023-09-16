@@ -1,11 +1,12 @@
+from worker import Work, create_workers, dismiss_workers
 from asyncio import Queue
 import asyncio
 import logging
+import readme
 import random
 import time
 import copy
 import os
-from worker import Work, create_workers, dismiss_workers
 
 
 # Get info from .env file
@@ -65,6 +66,10 @@ def test_using_methods():
     task = asyncio.sleep
 
     asyncio.run(run(name, queue, task))
+
+
+def test_readme():
+    asyncio.run(readme.run())
 
 
 if __name__ == "__main__":
