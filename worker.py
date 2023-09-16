@@ -18,6 +18,8 @@ class Worker:
         await self.cancel_tasks()
 
     async def create_tasks(self, num_of_workers: int) -> list:
+        if self.tasks:
+            await self.cancel_tasks()
         self.tasks = await create_tasks(
             self.name, self.queue, self.task, num_of_workers
         )
