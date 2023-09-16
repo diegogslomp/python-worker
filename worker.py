@@ -16,14 +16,6 @@ class Worker:
         await self.queue.join()
         await cancel_tasks(tasks)
 
-    async def run_forever(self, num_of_workers):
-        tasks = await create_tasks(self, num_of_workers)
-        try:
-            while True:
-                await self.queue.join()
-        finally:
-            await cancel_tasks(tasks)
-
 
 async def do_task(name: str, queue: Queue, task: Callable) -> None:
     while True:
