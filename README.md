@@ -4,13 +4,15 @@ Run sync/async tasks from a queue
 
 Instead of
 ```python
-def do(thing):
-    # Do thing
-    pass
+import time
+import random
 
 some_list = []
-for x in some_list:
-    do(x)
+for _ in range(10):
+    some_list.append(random.uniform(0.05, 1.0))
+
+for sleep_for in some_list:
+    time.sleep(sleep_for)
 ```
 
 Create workers to do tasks from a queue of items
@@ -31,7 +33,7 @@ for _ in range(10):
 
 # Create a worker
 worker = Worker(
-    name="async_sleep_worker",
+    name="sleep_worker",
     queue=queue,
     task=asyncio.sleep,
 )
