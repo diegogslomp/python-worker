@@ -10,11 +10,20 @@ class Worker:
         self.name = name
         self.queue = queue
         self.task = task
+        self.tasks = []
 
     async def run(self, num_of_workers: int) -> None:
-        tasks = await create_tasks(self.name, self.queue, self.task, num_of_workers)
+        self.tasks = await self.create_tasks(num_of_workers)
         await self.queue.join()
-        await cancel_tasks(tasks)
+        await self.cancel_tasks()
+
+    async def create_tasks(self, num_of_workers: int) -> list:
+        self.tasks = await create_tasks(
+            self.name, self.queue, self.task, num_of_workers
+        )
+
+    async def cancel_tasks(self) -> None:
+        await cancel_tasks(self.tasks)
 
 
 async def do_task(name: str, queue: Queue, task: Callable) -> None:
@@ -40,6 +49,8 @@ async def create_tasks(
 
 
 async def cancel_tasks(tasks: list) -> None:
+    if not tasks:
+        return
     for task in tasks:
         task.cancel()
     await asyncio.gather(*tasks, return_exceptions=True)
