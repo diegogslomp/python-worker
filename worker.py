@@ -5,27 +5,27 @@ import logging
 import inspect
 
 
-class Worker:
+class Work:
     def __init__(self, name: str, queue: Queue, task: Callable):
         self.name = name
         self.queue = queue
         self.task = task
-        self.tasks = []
+        self.workers = []
 
     async def run(self, num_of_workers: int) -> None:
-        self.tasks = await self.create_tasks(num_of_workers)
+        self.workers = await self.create_workers(num_of_workers)
         await self.queue.join()
-        await self.cancel_tasks()
+        await self.dismiss_workers()
 
-    async def create_tasks(self, num_of_workers: int) -> list:
-        if self.tasks:
-            await self.cancel_tasks()
-        self.tasks = await create_tasks(
+    async def create_workers(self, num_of_workers: int) -> list:
+        if self.workers:
+            await self.dismiss_workers()
+        self.workers = await create_workers(
             self.name, self.queue, self.task, num_of_workers
         )
 
-    async def cancel_tasks(self) -> None:
-        await cancel_tasks(self.tasks)
+    async def dismiss_workers(self) -> None:
+        await dismiss_workers(self.workers)
 
 
 async def do_task(name: str, queue: Queue, task: Callable) -> None:
@@ -40,20 +40,20 @@ async def do_task(name: str, queue: Queue, task: Callable) -> None:
         logging.debug(f"{name} done {item}")
 
 
-async def create_tasks(
+async def create_workers(
     name: str, queue: Queue, task: Callable, num_of_workers: int
 ) -> list:
     for i in range(num_of_workers):
-        tasks = []
-        t = asyncio.create_task(do_task(f"{name}-{i}", queue, task))
-        tasks.append(t)
-    return tasks
+        workers = []
+        worker = asyncio.create_task(do_task(f"{name}-{i}", queue, task))
+        workers.append(worker)
+    return workers
 
 
-async def cancel_tasks(tasks: list) -> None:
-    if not tasks:
+async def dismiss_workers(workers: list) -> None:
+    if not workers:
         return
-    for task in tasks:
-        task.cancel()
-    await asyncio.gather(*tasks, return_exceptions=True)
-    logging.info(f"Tasks finished")
+    for worker in workers:
+        worker.cancel()
+    await asyncio.gather(*workers, return_exceptions=True)
+    logging.info(f"Workers dismissed")
