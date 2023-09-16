@@ -5,7 +5,7 @@ import random
 import time
 import copy
 import os
-from worker import Worker, work_forever
+from worker import Worker, do_task, create_tasks, cancel_tasks
 
 
 # Get info from .env file
@@ -23,13 +23,8 @@ for _ in range(num_of_tasks):
 
 
 async def sleep_worker_test(worker):
-    tasks = []
     # Create task for each worker
-    for i in range(num_of_workers):
-        task = asyncio.create_task(
-            work_forever(f"{worker.name}-{i}", worker.queue, worker.task)
-        )
-        tasks.append(task)
+    tasks = await create_tasks(worker, num_of_workers)
 
     # Wait queue finish
     started_at = time.monotonic()
@@ -37,11 +32,7 @@ async def sleep_worker_test(worker):
     total_slept_for = time.monotonic() - started_at
 
     # Cancel tasks
-    for task in tasks:
-        task.cancel()
-
-    # Wait tasks down
-    await asyncio.gather(*tasks, return_exceptions=True)
+    await cancel_tasks(tasks)
 
     # Summmary
     logging.info(
@@ -67,6 +58,7 @@ def test_async_task_worker():
     )
     asyncio.run(async_task_worker.run(num_of_workers))
 
+
 def test_sleep_worker():
     sleep_worker = Worker(
         name="sleep_worker",
@@ -74,6 +66,7 @@ def test_sleep_worker():
         task=asyncio.sleep,
     )
     asyncio.run(sleep_worker_test(sleep_worker))
+
 
 if __name__ == "__main__":
     test_sync_task_worker()

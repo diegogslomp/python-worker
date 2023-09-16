@@ -12,20 +12,20 @@ class Worker:
         self.task = task
 
     async def run(self, num_of_workers):
-        tasks = []
-        for i in range(num_of_workers):
-            task = asyncio.create_task(
-                work_forever(f"{self.name}-{i}", self.queue, self.task)
-            )
-            tasks.append(task)
+        tasks = await create_tasks(self, num_of_workers)
         await self.queue.join()
-        for task in tasks:
-            task.cancel()
-        await asyncio.gather(*tasks, return_exceptions=True)
-        logging.info(f"{num_of_workers} {self.name} done")
+        await cancel_tasks(tasks)
+
+    async def run_forever(self, num_of_workers):
+        tasks = await create_tasks(self, num_of_workers)
+        try:
+            while True:
+                await self.queue.join()
+        finally:
+            await cancel_tasks(tasks)
 
 
-async def work_forever(name: str, queue: Queue, task: Callable) -> None:
+async def do_task(name: str, queue: Queue, task: Callable) -> None:
     while True:
         item = await queue.get()
         if inspect.iscoroutinefunction(task):
@@ -35,3 +35,20 @@ async def work_forever(name: str, queue: Queue, task: Callable) -> None:
             await loop.run_in_executor(None, task, item)
         queue.task_done()
         logging.debug(f"{name} done {item}")
+
+
+async def create_tasks(worker, num_of_workers):
+    for i in range(num_of_workers):
+        tasks = []
+        task = asyncio.create_task(
+            do_task(f"{worker.name}-{i}", worker.queue, worker.task)
+        )
+        tasks.append(task)
+    return tasks
+
+
+async def cancel_tasks(tasks):
+    for task in tasks:
+        task.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
+    logging.info(f"Tasks finished")
