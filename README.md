@@ -2,7 +2,7 @@
 
 Run sync/async tasks from a queue
 
-Instead of create a loop to run a function in every item of a list
+Instead of creating a loop to run a function on each item in a list
 ```python
 import time
 import random
