@@ -40,8 +40,8 @@ async def run():
         task=asyncio.sleep,
     )
 
-    # Create task for each worker
-    tasks = await create_tasks(worker, 3)
+    # Create 3 tasks
+    tasks = await create_tasks(worker.name, worker.queue, worker.task, 3)
 
     # Wait queue finish
     await worker.queue.join()

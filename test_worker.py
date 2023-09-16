@@ -5,7 +5,7 @@ import random
 import time
 import copy
 import os
-from worker import Worker, do_task, create_tasks, cancel_tasks
+from worker import Worker, create_tasks, cancel_tasks
 
 
 # Get info from .env file
@@ -24,7 +24,7 @@ for _ in range(num_of_tasks):
 
 async def sleep_worker_test(worker):
     # Create task for each worker
-    tasks = await create_tasks(worker, num_of_workers)
+    tasks = await create_tasks(worker.name, worker.queue, worker.task, num_of_workers)
 
     # Wait queue finish
     started_at = time.monotonic()
