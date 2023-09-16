@@ -22,13 +22,13 @@ for _ in range(num_of_tasks):
     initial_queue.put_nowait(sleep_for)
 
 
-async def sleep_worker_test(worker):
+async def sleep_worker_test(name, queue, task):
     # Create task for each worker
-    tasks = await create_tasks(worker.name, worker.queue, worker.task, num_of_workers)
+    tasks = await create_tasks(name, queue, task, num_of_workers)
 
     # Wait queue finish
     started_at = time.monotonic()
-    await worker.queue.join()
+    await queue.join()
     total_slept_for = time.monotonic() - started_at
 
     # Cancel tasks
@@ -36,7 +36,7 @@ async def sleep_worker_test(worker):
 
     # Summmary
     logging.info(
-        f"{num_of_workers} {worker.name}s slept in parallel for {total_slept_for:.2f} seconds"
+        f"{num_of_workers} {name}s slept in parallel for {total_slept_for:.2f} seconds"
     )
     logging.info(f"total expected sleep time: {total_sleep_time:.2f} seconds")
 
@@ -60,12 +60,11 @@ def test_async_task_worker():
 
 
 def test_sleep_worker():
-    sleep_worker = Worker(
-        name="sleep_worker",
-        queue=copy.deepcopy(initial_queue),
-        task=asyncio.sleep,
-    )
-    asyncio.run(sleep_worker_test(sleep_worker))
+    name="sleep_worker"
+    queue=copy.deepcopy(initial_queue)
+    task=asyncio.sleep
+
+    asyncio.run(sleep_worker_test(name, queue, task))
 
 
 if __name__ == "__main__":

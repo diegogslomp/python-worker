@@ -33,18 +33,14 @@ async def run():
         sleep_for = random.uniform(0.05, 1.0)
         queue.put_nowait(sleep_for)
 
-    # Create a worker
-    worker = Worker(
-        name="sleep_worker",
-        queue=queue,
-        task=asyncio.sleep,
-    )
+    name="sleep_worker"
+    task=asyncio.sleep
 
     # Create 3 tasks
-    tasks = await create_tasks(worker.name, worker.queue, worker.task, 3)
+    tasks = await create_tasks(name, queue, task, 3)
 
     # Wait queue finish
-    await worker.queue.join()
+    await queue.join()
 
     # Cancel tasks
     await cancel_tasks(tasks)
