@@ -11,7 +11,7 @@ class Worker:
         self.queue = queue
         self.task = task
 
-    async def run(self, num_of_workers):
+    async def run(self, num_of_workers: int) -> None:
         tasks = await create_tasks(self, num_of_workers)
         await self.queue.join()
         await cancel_tasks(tasks)
@@ -29,7 +29,7 @@ async def do_task(name: str, queue: Queue, task: Callable) -> None:
         logging.debug(f"{name} done {item}")
 
 
-async def create_tasks(worker, num_of_workers):
+async def create_tasks(worker: Worker, num_of_workers: int) -> list:
     for i in range(num_of_workers):
         tasks = []
         task = asyncio.create_task(
@@ -39,7 +39,7 @@ async def create_tasks(worker, num_of_workers):
     return tasks
 
 
-async def cancel_tasks(tasks):
+async def cancel_tasks(tasks: list) -> None:
     for task in tasks:
         task.cancel()
     await asyncio.gather(*tasks, return_exceptions=True)
