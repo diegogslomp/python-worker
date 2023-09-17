@@ -22,7 +22,6 @@ from worker import Work
 import asyncio
 import logging
 import random
-import os
 
 
 async def run():
