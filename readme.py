@@ -17,11 +17,12 @@ for sleep_for in some_list:
 
 ### Create workers to do the task from a queue of items
 ### ```python
-from worker import Work
 from asyncio import Queue
+from worker import Work
 import asyncio
-import random
 import logging
+import random
+import os
 
 
 async def run():
@@ -34,7 +35,7 @@ async def run():
         queue.put_nowait(sleep_for)
 
     # Create a work
-    work = Work(name="sleep_randonly", queue=queue, task=asyncio.sleep)
+    work = Work(name="sleep_randomly", queue=queue, task=asyncio.sleep)
 
     # Create 3 workers to do the task
     await work.create_workers(3)

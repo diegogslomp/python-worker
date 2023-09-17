@@ -43,9 +43,10 @@ async def do_task(name: str, queue: Queue, task: Callable) -> None:
 async def create_workers(
     name: str, queue: Queue, task: Callable, num_of_workers: int
 ) -> list:
+    workers = []
     for i in range(num_of_workers):
-        workers = []
         worker = asyncio.create_task(do_task(f"{name}-{i}", queue, task))
+        logging.debug(f"{name}-{i} worker created")
         workers.append(worker)
     return workers
 
@@ -56,4 +57,4 @@ async def dismiss_workers(workers: list) -> None:
     for worker in workers:
         worker.cancel()
     await asyncio.gather(*workers, return_exceptions=True)
-    logging.info(f"Workers dismissed")
+    logging.debug(f"workers dismissed")
