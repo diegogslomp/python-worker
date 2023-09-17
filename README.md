@@ -32,20 +32,16 @@ def populate_queue(queue: Queue) -> None:
 
 
 async def do_forever(work: Work) -> None:
-    try:
-        while True:
-            populate_queue(work.queue)
-            await work.queue.join()
-            logging.debug("Queue done")
-    finally:
-        await work.dismiss_workers()
+    while True:
+        populate_queue(work.queue)
+        await work.queue.join()
+        logging.debug("Queue done")
 
 
 async def run() -> None:
     logging.basicConfig(level=logging.DEBUG)
 
     work = Work(name="sleep_randomly", task=asyncio.sleep)
-
     await work.create_workers(3)
     await do_forever(work)
 
