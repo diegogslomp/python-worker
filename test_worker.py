@@ -9,9 +9,9 @@ import copy
 import os
 
 
-# Get vars from .env file
-num_of_sleepers = int(os.getenv("SLEEPERS", 10))
-num_of_workers = int(os.getenv("WORKERS", 2))
+num_of_sleepers = 10
+num_of_workers = 5
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Populate queue
@@ -41,6 +41,20 @@ def test_async_task_work():
     asyncio.run(work.run_once(num_of_workers))
 
 
+def test_manual_task_work():
+    async def run():
+        work = Work(
+            name="manual_task_worker",
+            queue=copy.deepcopy(initial_queue),
+            task=asyncio.sleep,
+        )
+        await work.create_workers(num_of_workers)
+        await work.queue.join()
+        await work.dismiss_workers()
+
+    asyncio.run(run())
+
+
 def test_readme():
     asyncio.run(readme.run())
 
@@ -48,4 +62,5 @@ def test_readme():
 if __name__ == "__main__":
     test_sync_task_work()
     test_async_task_work()
+    test_manual_task_work()
     test_readme()

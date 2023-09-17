@@ -25,7 +25,7 @@ import logging
 import random
 
 
-def queue_feeder(queue: Queue) -> None:
+def feeder(queue: Queue) -> None:
     for _ in range(10):
         sleep_for = random.uniform(0.05, 1.0)
         queue.put_nowait(sleep_for)
@@ -36,10 +36,10 @@ async def run() -> None:
 
     work = Work(name="sleep_randomly", task=asyncio.sleep)
 
-    queue_feeder(work.queue)
+    feeder(work.queue)
     await work.run_once(num_of_workers=3)
 
-    await work.run_forever(num_of_workers=3, queue_feeder=queue_feeder)
+    await work.run_forever(num_of_workers=3, queue_feeder=feeder)
 
 
 if __name__ == "__main__":
