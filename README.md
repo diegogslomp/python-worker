@@ -7,11 +7,11 @@ Instead of creating a loop to run a task on each item in a list
 import time
 import random
 
-some_list = []
+random_numbers = []
 for _ in range(10):
-    some_list.append(random.uniform(0.05, 1.0))
+    random_numbers.append(random.uniform(0.05, 1.0))
 
-for sleep_for in some_list:
+for sleep_for in random_numbers:
     time.sleep(sleep_for)
 ```
 
