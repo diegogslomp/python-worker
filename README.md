@@ -34,10 +34,11 @@ def queue_feeder(queue: Queue) -> None:
 async def run() -> None:
     logging.basicConfig(level=logging.DEBUG)
 
-    queue = Queue()
-    queue_feeder(queue)
-    work = Work(name="sleep_randomly", queue=queue, task=asyncio.sleep)
+    work = Work(name="sleep_randomly", task=asyncio.sleep)
+
+    queue_feeder(work.queue)
     await work.run_once(num_of_workers=3)
+
     await work.run_forever(num_of_workers=3, queue_feeder=queue_feeder)
 
 
