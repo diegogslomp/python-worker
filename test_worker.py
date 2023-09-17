@@ -6,7 +6,6 @@ import readme
 import random
 import time
 import copy
-import os
 
 
 num_of_sleepers = 10
