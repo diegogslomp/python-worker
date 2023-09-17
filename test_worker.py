@@ -24,21 +24,21 @@ for _ in range(num_of_sleepers):
 
 
 def test_sync_task_work():
-    sync_task_work = Work(
+    work = Work(
         name="sync_task_worker",
         queue=copy.deepcopy(initial_queue),
         task=time.sleep,
     )
-    asyncio.run(sync_task_work.run(num_of_workers))
+    asyncio.run(work.run(num_of_workers))
 
 
 def test_async_task_work():
-    async_task_worker = Work(
+    work = Work(
         name="async_task_worker",
         queue=copy.deepcopy(initial_queue),
         task=asyncio.sleep,
     )
-    asyncio.run(async_task_worker.run(num_of_workers))
+    asyncio.run(work.run(num_of_workers))
 
 
 async def run(name, queue, task):
