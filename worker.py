@@ -3,6 +3,7 @@ from asyncio import Queue
 import asyncio
 import logging
 import inspect
+import time
 
 
 class Work:
@@ -14,7 +15,10 @@ class Work:
 
     async def run(self, num_of_workers: int) -> None:
         self.workers = await self.create_workers(num_of_workers)
+        started_at = time.monotonic()
         await self.queue.join()
+        completed_at = time.monotonic() - started_at
+        logging.debug(f"loop completed in {completed_at:.2f} seconds")
         await self.dismiss_workers()
 
     async def create_workers(self, num_of_workers: int) -> list:

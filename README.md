@@ -36,7 +36,16 @@ async def run():
     # Create a work
     work = Work(name="sleep_randomly", queue=queue, task=asyncio.sleep)
 
-    # Create 3 workers to do the task
+    # Run 3 workers and dismiss
+    await work.run(3)
+
+
+asyncio.run(run())
+```
+
+For more control, instead `work.run(3)` do
+```python
+    # Create workers
     await work.create_workers(3)
 
     # Wait queue finish
@@ -44,8 +53,4 @@ async def run():
 
     # Dismiss workers
     await work.dismiss_workers()
-
-
-# Run
-asyncio.run(run())
 ```
