@@ -2,7 +2,6 @@ from worker import Work, create_workers, dismiss_workers
 from asyncio import Queue
 import asyncio
 import logging
-import readme
 import random
 import time
 import copy
@@ -29,7 +28,7 @@ def test_sync_task_work():
         queue=copy.deepcopy(initial_queue),
         task=time.sleep,
     )
-    asyncio.run(work.run(num_of_workers))
+    asyncio.run(work.run_once(num_of_workers))
 
 
 def test_async_task_work():
@@ -38,10 +37,10 @@ def test_async_task_work():
         queue=copy.deepcopy(initial_queue),
         task=asyncio.sleep,
     )
-    asyncio.run(work.run(num_of_workers))
+    asyncio.run(work.run_once(num_of_workers))
 
 
-async def run(name: str, task: callable, queue: Queue) -> None:
+async def run_using_methods(name: str, task: callable, queue: Queue) -> None:
     # Create workers
     workers = await create_workers(
         name=name, task=task, num_of_workers=num_of_workers, queue=queue
@@ -63,19 +62,15 @@ async def run(name: str, task: callable, queue: Queue) -> None:
 
 
 def test_using_methods():
-    name = "test_using_methods"
+    name = "task_using_methods"
     task = asyncio.sleep
     queue = copy.deepcopy(initial_queue)
 
-    asyncio.run(run(name=name, task=task, queue=queue))
-
-
-def test_readme():
-    asyncio.run(readme.run())
+    asyncio.run(run_using_methods(name=name, task=task, queue=queue))
 
 
 if __name__ == "__main__":
+    pass
     test_sync_task_work()
     test_async_task_work()
     test_using_methods()
-    test_readme()

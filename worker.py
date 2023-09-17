@@ -2,27 +2,24 @@ from asyncio import Queue
 import asyncio
 import logging
 import inspect
-import time
 
 
 class Work:
-    def __init__(self, name: str, task: callable, queue=Queue()):
+    def __init__(self, name: str, task: callable, queue: Queue):
         self.name = name
         self.queue = queue
         self.task = task
         self.workers = []
 
-    async def run(self, num_of_workers: int) -> None:
-        self.workers = await self.create_workers(num_of_workers)
-        started_at = time.monotonic()
-        await self.queue.join()
-        completed_at = time.monotonic() - started_at
-        logging.debug(f"loop completed in {completed_at:.2f} seconds")
-        await self.dismiss_workers()
+    async def run_once(self, num_of_workers: int) -> None:
+        await run_once(work=self, num_of_workers=num_of_workers)
 
-    async def create_workers(self, num_of_workers: int) -> list:
-        if self.workers:
-            await self.dismiss_workers()
+    async def run_forever(self, num_of_workers: int, queue_feeder: callable) -> None:
+        await run_forever(
+            work=self, num_of_workers=num_of_workers, queue_feeder=queue_feeder
+        )
+
+    async def create_workers(self, num_of_workers: int) -> None:
         self.workers = await create_workers(
             name=self.name,
             queue=self.queue,
@@ -46,8 +43,25 @@ async def do_task(name: str, queue: Queue, task: callable) -> None:
         logging.debug(f"{name} done {item}")
 
 
+async def run_once(work: Work, num_of_workers: int) -> None:
+    await work.create_workers(num_of_workers)
+    await work.queue.join()
+    await work.dismiss_workers()
+
+
+async def run_forever(work: Work, num_of_workers: int, queue_feeder: callable) -> None:
+    await work.create_workers(num_of_workers)
+    try:
+        while True:
+            queue_feeder(work.queue)
+            await work.queue.join()
+            logging.debug("Queue done")
+    finally:
+        await work.dismiss_workers()
+
+
 async def create_workers(
-    name: str, task: callable, num_of_workers: int, queue=Queue()
+    name: str, task: callable, num_of_workers: int, queue: Queue
 ) -> list:
     workers = []
     for i in range(num_of_workers):

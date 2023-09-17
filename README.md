@@ -25,26 +25,22 @@ import logging
 import random
 
 
-def populate_queue(queue: Queue) -> None:
+def queue_feeder(queue: Queue) -> None:
     for _ in range(10):
         sleep_for = random.uniform(0.05, 1.0)
         queue.put_nowait(sleep_for)
 
 
-async def do_forever(work: Work) -> None:
-    while True:
-        populate_queue(work.queue)
-        await work.queue.join()
-        logging.debug("Queue done")
-
-
 async def run() -> None:
     logging.basicConfig(level=logging.DEBUG)
 
-    work = Work(name="sleep_randomly", task=asyncio.sleep)
-    await work.create_workers(3)
-    await do_forever(work)
+    queue = Queue()
+    queue_feeder(queue)
+    work = Work(name="sleep_randomly", queue=queue, task=asyncio.sleep)
+    await work.run_once(num_of_workers=3)
+    await work.run_forever(num_of_workers=3, queue_feeder=queue_feeder)
 
 
-asyncio.run(run())
+if __name__ == "__main__":
+    asyncio.run(run())
 ```
