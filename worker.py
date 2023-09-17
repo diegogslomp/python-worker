@@ -5,7 +5,7 @@ import inspect
 
 
 class Work:
-    def __init__(self, name: str, task: callable, queue: Queue):
+    def __init__(self, name: str, task: callable, queue=Queue()):
         self.name = name
         self.queue = queue
         self.task = task
