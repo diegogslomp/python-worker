@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from asyncio import Queue
 import asyncio
 import logging
@@ -7,7 +6,7 @@ import time
 
 
 class Work:
-    def __init__(self, name: str, queue: Queue, task: Callable):
+    def __init__(self, name: str, task: callable, queue=Queue()):
         self.name = name
         self.queue = queue
         self.task = task
@@ -25,14 +24,17 @@ class Work:
         if self.workers:
             await self.dismiss_workers()
         self.workers = await create_workers(
-            self.name, self.queue, self.task, num_of_workers
+            name=self.name,
+            queue=self.queue,
+            task=self.task,
+            num_of_workers=num_of_workers,
         )
 
     async def dismiss_workers(self) -> None:
         await dismiss_workers(self.workers)
 
 
-async def do_task(name: str, queue: Queue, task: Callable) -> None:
+async def do_task(name: str, queue: Queue, task: callable) -> None:
     while True:
         item = await queue.get()
         if inspect.iscoroutinefunction(task):
@@ -45,11 +47,13 @@ async def do_task(name: str, queue: Queue, task: Callable) -> None:
 
 
 async def create_workers(
-    name: str, queue: Queue, task: Callable, num_of_workers: int
+    name: str, task: callable, num_of_workers: int, queue=Queue()
 ) -> list:
     workers = []
     for i in range(num_of_workers):
-        worker = asyncio.create_task(do_task(f"{name}-{i}", queue, task))
+        worker = asyncio.create_task(
+            coro=do_task(f"{name}-{i}", queue=queue, task=task)
+        )
         logging.debug(f"{name}-{i} worker created")
         workers.append(worker)
     return workers

@@ -44,8 +44,7 @@ async def do_forever(work: Work) -> None:
 async def run() -> None:
     logging.basicConfig(level=logging.DEBUG)
 
-    queue = Queue()
-    work = Work(name="sleep_randomly", queue=queue, task=asyncio.sleep)
+    work = Work(name="sleep_randomly", task=asyncio.sleep)
 
     await work.create_workers(3)
     await do_forever(work)

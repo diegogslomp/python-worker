@@ -41,9 +41,11 @@ def test_async_task_work():
     asyncio.run(work.run(num_of_workers))
 
 
-async def run(name, queue, task):
+async def run(name: str, task: callable, queue: Queue) -> None:
     # Create workers
-    workers = await create_workers(name, queue, task, num_of_workers)
+    workers = await create_workers(
+        name=name, task=task, num_of_workers=num_of_workers, queue=queue
+    )
 
     # Wait queue finish
     started_at = time.monotonic()
@@ -62,10 +64,10 @@ async def run(name, queue, task):
 
 def test_using_methods():
     name = "test_using_methods"
-    queue = copy.deepcopy(initial_queue)
     task = asyncio.sleep
+    queue = copy.deepcopy(initial_queue)
 
-    asyncio.run(run(name, queue, task))
+    asyncio.run(run(name=name, task=task, queue=queue))
 
 
 def test_readme():
