@@ -1,7 +1,5 @@
 # Python Worker
 
-Queue sync/async tasks
-
 Instead of creating a loop to run a task on each item in a list
 ```python
 import time
