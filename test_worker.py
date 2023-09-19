@@ -59,7 +59,10 @@ def test_readme():
 
 
 if __name__ == "__main__":
-    test_sync_task_work()
-    test_async_task_work()
-    test_manual_task_work()
-    test_readme()
+    try:
+        test_sync_task_work()
+        test_async_task_work()
+        test_manual_task_work()
+        test_readme()
+    except (KeyboardInterrupt, SystemExit):
+        pass
