@@ -32,7 +32,7 @@ def feeder(queue: Queue) -> None:
 
 
 async def run() -> None:
-    work = Work(name="sleep_randomly", task=asyncio.sleep)
+    work = Work(name="sleep", task=asyncio.sleep)
 
     feeder(work.queue)
     await work.run_once(num_of_workers=3)

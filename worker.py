@@ -33,7 +33,7 @@ class Work:
             new_worker = asyncio.create_task(
                 coro=do_task(f"{self.name}-{i}", queue=self.queue, task=self.task)
             )
-            logging.debug(f"{self.name}-{i} worker created")
+            logging.debug(f"worker {self.name}-{i} created")
             self.workers.append(new_worker)
 
     async def dismiss_workers(self) -> None:
