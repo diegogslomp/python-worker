@@ -12,15 +12,15 @@ class Work:
         self.workers = []
 
     async def run_once(self, num_of_workers: int) -> None:
+        await self.create_workers(num_of_workers)
         try:
-            await self.create_workers(num_of_workers)
             await self.queue.join()
         finally:
             await self.dismiss_workers()
 
     async def run_forever(self, num_of_workers: int, queue_feeder: callable) -> None:
+        await self.create_workers(num_of_workers)
         try:
-            await self.create_workers(num_of_workers)
             while True:
                 queue_feeder(self.queue)
                 await self.queue.join()
