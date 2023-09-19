@@ -32,7 +32,7 @@ def feeder(queue: Queue) -> None:
 
 
 async def run() -> None:
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
     work = Work(name="sleep_randomly", task=asyncio.sleep)
 

@@ -11,7 +11,9 @@ import copy
 num_of_sleepers = 10
 num_of_workers = 5
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s"
+)
 
 # Populate queue
 initial_queue = Queue()
