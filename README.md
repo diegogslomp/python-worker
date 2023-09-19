@@ -1,6 +1,6 @@
-### Worker
+### worker
 
-Instead of creating a loop to run a task on each item in a list
+instead of creating a loop to run a task on each item in a list
 ```python
 import time
 import random
@@ -14,7 +14,7 @@ while True:
         time.sleep(sleep_for)
 ```
 
-Create workers to do the task from a queue of items
+create workers to do the task from a queue of items
 ```python
 from asyncio import Queue
 from worker import Work
