@@ -1,8 +1,8 @@
-# worker
+# Worker
 
-run sync/async tasks from a queue
+Run sync/async tasks from a queue
 
-instead of creating a loop to run a task on each item in a list
+Instead of creating a loop to run a task on each item in a list
 ```python
 import time
 import random
@@ -16,7 +16,7 @@ while True:
         time.sleep(sleep_for)
 ```
 
-create workers to do the task from a queue of items
+Create workers to do the task from a queue of items
 ```python
 from asyncio import Queue
 from worker import Work
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
 ```
 
-tested with python >= 3.11
+Tested with python >= 3.11
 ```
 python readme.py
 python test_worker.py
