@@ -12,15 +12,15 @@ class Work:
         self.workers = []
 
     async def run_once(self, num_of_workers: int) -> None:
+        await self.create_workers(num_of_workers)
         try:
-            await self.create_workers(num_of_workers)
             await self.queue.join()
         finally:
             await self.dismiss_workers()
 
     async def run_forever(self, num_of_workers: int, queue_feeder: callable) -> None:
+        await self.create_workers(num_of_workers)
         try:
-            await self.create_workers(num_of_workers)
             while True:
                 queue_feeder(self.queue)
                 await self.queue.join()
@@ -30,11 +30,12 @@ class Work:
 
     async def create_workers(self, num_of_workers: int) -> None:
         for i in range(num_of_workers):
-            worker = asyncio.create_task(
-                do_task(f"{self.name}-{i}", queue=self.queue, task=self.task)
+            self.workers.append(
+                asyncio.create_task(
+                    do_task(name=f"{self.name}-{i}", queue=self.queue, task=self.task)
+                )
             )
             logging.debug(f"worker {self.name}-{i} created")
-            self.workers.append(worker)
 
     async def dismiss_workers(self) -> None:
         if not self.workers:

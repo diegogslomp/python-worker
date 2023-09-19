@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
 ```
 
-Test code above
+Test code above (python >= 3.11)
 ```
 python readme.py
 ```
