@@ -31,7 +31,7 @@ class Work:
     async def create_workers(self, num_of_workers: int) -> None:
         for i in range(num_of_workers):
             new_worker = asyncio.create_task(
-                coro=do_task(f"{self.name}-{i}", queue=self.queue, task=self.task)
+                do_task(f"{self.name}-{i}", queue=self.queue, task=self.task)
             )
             logging.debug(f"worker {self.name}-{i} created")
             self.workers.append(new_worker)
@@ -39,8 +39,8 @@ class Work:
     async def dismiss_workers(self) -> None:
         if not self.workers:
             return
-        for old_worker in self.workers:
-            old_worker.cancel()
+        for worker in self.workers:
+            worker.cancel()
         await asyncio.gather(*self.workers, return_exceptions=True)
         logging.debug(f"workers dismissed")
 
