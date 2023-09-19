@@ -32,8 +32,6 @@ def feeder(queue: Queue) -> None:
 
 
 async def run() -> None:
-    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
-
     work = Work(name="sleep_randomly", task=asyncio.sleep)
 
     feeder(work.queue)
@@ -43,6 +41,7 @@ async def run() -> None:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
     try:
         asyncio.run(run())
     except (KeyboardInterrupt, SystemExit):
