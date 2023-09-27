@@ -25,7 +25,7 @@ import logging
 import random
 
 
-def feeder(queue: Queue) -> None:
+def queue_feeder(queue: Queue) -> None:
     for _ in range(10):
         sleep_for = random.uniform(0.05, 1.0)
         queue.put_nowait(sleep_for)
@@ -34,10 +34,10 @@ def feeder(queue: Queue) -> None:
 async def run() -> None:
     work = Work(name="sleep", task=asyncio.sleep)
 
-    feeder(work.queue)
+    queue_feeder(work.queue)
     await work.run_once(num_of_workers=3)
 
-    await work.run_forever(num_of_workers=3, queue_feeder=feeder)
+    await work.run_forever(num_of_workers=3, queue_feeder=queue_feeder)
 
 
 if __name__ == "__main__":
@@ -49,8 +49,7 @@ if __name__ == "__main__":
 
 ```
 
-Tested with python >= 3.11
+Test code above (python >= 3.11)
 ```
 python readme.py
-python test_worker.py
 ```
