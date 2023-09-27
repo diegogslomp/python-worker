@@ -7,13 +7,18 @@ Instead of creating a loop to run a task on each item in a list
 import time
 import random
 
-while True:
+
+def get_list() -> list:
     random_numbers = []
     for _ in range(10):
         random_numbers.append(random.uniform(0.05, 1.0))
+    return random_numbers
 
+while True:
+    random_numbers = get_list()
     for sleep_for in random_numbers:
         time.sleep(sleep_for)
+        print(sleep_for)
 ```
 
 Create workers to do the task from a queue of items
