@@ -30,12 +30,13 @@ class Work:
 
     async def create_workers(self, num_of_workers: int) -> None:
         for i in range(num_of_workers):
+            worker_name = f"{self.name}-{i+1}"
             self.workers.append(
                 asyncio.create_task(
-                    do_task(name=f"{self.name}-{i}", queue=self.queue, task=self.task)
+                    do_task(name=f"{worker_name}", queue=self.queue, task=self.task)
                 )
             )
-            logging.debug(f"worker {self.name}-{i} created")
+            logging.debug(f"worker {worker_name} created")
 
     async def dismiss_workers(self) -> None:
         if not self.workers:
