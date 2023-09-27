@@ -33,7 +33,6 @@ def queue_feeder(queue: Queue) -> None:
 
 async def run() -> None:
     work = Work(name="sleep", task=asyncio.sleep)
-
     await work.run_forever(num_of_workers=3, queue_feeder=queue_feeder)
 
 
