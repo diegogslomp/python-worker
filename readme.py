@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
 ### ```
 
-### Test code above (python >= 3.11)
+### Test code above in python >= 3.11
 ### ```
 ### python readme.py
 ### ```
